@@ -1,12 +1,14 @@
 # This script checks RSS feeds for new entries and posts them to Mastodon.
 
+import os
 import json
 import feedparser
 import time
 from mastodon import Mastodon
 
 # Load the Mastodon access token and instance URL from a JSON file
-with open("mastodon_credentials.json", "r") as f:
+mastodon_credentials_path = os.path.abspath("mastodon_credentials.json")
+with open(mastodon_credentials_path, "r") as f:
     credentials = json.load(f)
 access_token = credentials["access_token"]
 instance_url = credentials["instance_url"]
@@ -16,13 +18,15 @@ mastodon = Mastodon(access_token=access_token, api_base_url=instance_url)
 
 # Load the feed URLs from a JSON file
 # The JSON file should be an array of strings representing the feed URLs.
-with open("feed_urls.json", "r") as f:
+feed_urls_path = os.path.abspath("feed_urls.json")
+with open(feed_urls_path, "r") as f:
     feed_urls = json.load(f)
 
 # Load the timestamp for each feed from a JSON file
 # The JSON file should be a dictionary mapping feed URLs to timestamps.
 try:
-    with open("last_checked_times.json", "r") as f:
+    last_checked_times_path = os.path.abspath("last_checked_times.json")
+    with open(last_checked_times_path, "r") as f:
         last_checked_times = json.load(f)
 except FileNotFoundError:
     last_checked_times = {}
@@ -58,5 +62,5 @@ for feed_url in feed_urls:
 
         # Update the timestamp for the feed in the file
         last_checked_times[feed_url] = entry_time
-        with open("last_checked_times.json", "w") as f:
+        with open(last_checked_times_path, "w") as f:
             json.dump(last_checked_times, f)
