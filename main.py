@@ -4,7 +4,25 @@ import os
 import json
 import feedparser
 import time
+import re
 from mastodon import Mastodon
+from bs4 import BeautifulSoup
+
+def strip_html_tags(html_string):
+    """
+    Strips HTML tags from a string.
+
+    :param html_string: The HTML string to strip tags from.
+    :return: The input string with all HTML tags removed.
+    """
+    # Create a BeautifulSoup object from the HTML string
+    soup = BeautifulSoup(html_string, 'html.parser')
+    # Get the text content of the HTML, with spaces between tags
+    stripped_text = soup.get_text(separator=' ')
+    # Remove extra spaces
+    stripped_text = re.sub(' +', ' ', stripped_text)
+    # Return the stripped text
+    return stripped_text
 
 # Load the Mastodon access token and instance URL from a JSON file
 # The JSON file should contain a dictionary with "access_token" and "instance_url" keys.
@@ -61,7 +79,7 @@ for feed_url in feed_urls:
         entry_summary = (entry.summary[:240] + " ..."
                          if len(entry.summary) > 240 else entry.summary)
         # Create a message with the entry title, summary, and link.
-        message = f"{entry.title}\n\n{entry_summary}\n\n{entry.link}"
+        message = f"{strip_html_tags(entry.title)}\n\n{strip_html_tags(entry_summary)}\n\n{entry.link}"
         # Post the message to Mastodon.
         mastodon.status_post(message)
 
