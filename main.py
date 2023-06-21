@@ -8,6 +8,7 @@ import re
 from mastodon import Mastodon
 from bs4 import BeautifulSoup
 
+
 def strip_html_tags(html_string):
     """
     Strips HTML tags from a string.
@@ -24,8 +25,10 @@ def strip_html_tags(html_string):
     # Return the stripped text
     return stripped_text
 
+
 # Load the Mastodon access token and instance URL from a JSON file
-# The JSON file should contain a dictionary with "access_token" and "instance_url" keys.
+# The JSON file should contain a dictionary with "access_token"
+# and "instance_url" keys.
 mastodon_credentials_path = os.path.abspath("mastodon_credentials.json")
 with open(mastodon_credentials_path, "r") as f:
     credentials = json.load(f)
@@ -79,7 +82,8 @@ for feed_url in feed_urls:
         entry_summary = (entry.summary[:240] + " ..."
                          if len(entry.summary) > 240 else entry.summary)
         # Create a message with the entry title, summary, and link.
-        message = f"{strip_html_tags(entry.title)}\n\n{strip_html_tags(entry_summary)}\n\n{entry.link}"
+        message = f"{strip_html_tags(entry.title)}\n\n \
+            {strip_html_tags(entry_summary)}\n\n{entry.link}"
         # Post the message to Mastodon.
         mastodon.status_post(message)
 
