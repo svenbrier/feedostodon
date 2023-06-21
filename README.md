@@ -8,8 +8,7 @@ This script checks a list of RSS feeds for new entries and posts them to a Masto
 2. Create a virtual environment and activate it.
 3. Install the required packages using `pip install -r requirements.txt`.
 4. Create a Mastodon account and obtain an access token.
-5. Set the path to the folder containing the script with `script_path`.
-6. Create a `mastodon_credentials.json` file with the following format:
+5. Create a `mastodon_credentials.json` file with the following format:
 
 ```json
 {

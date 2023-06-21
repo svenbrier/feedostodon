@@ -1,16 +1,14 @@
 # This script checks RSS feeds for new entries and posts them to Mastodon.
 
+import os
 import json
 import feedparser
 import time
 from mastodon import Mastodon
 
-# Set the path to the folder containing the script
-script_folder = "/Users/sven/Scripts/feedostodon/"
-
 # Load the Mastodon access token and instance URL from a JSON file
 # The JSON file should contain a dictionary with "access_token" and "instance_url" keys.
-mastodon_credentials_path = f"{script_folder}mastodon_credentials.json"
+mastodon_credentials_path = os.path.abspath("mastodon_credentials.json")
 with open(mastodon_credentials_path, "r") as f:
     credentials = json.load(f)
 access_token = credentials["access_token"]
@@ -21,7 +19,7 @@ mastodon = Mastodon(access_token=access_token, api_base_url=instance_url)
 
 # Load the feed URLs from a JSON file
 # The JSON file should be an array of strings representing the feed URLs.
-feed_urls_path = f"{script_folder}feed_urls.json"
+feed_urls_path = os.path.abspath("feed_urls.json")
 with open(feed_urls_path, "r") as f:
     feed_urls = json.load(f)
 
@@ -29,7 +27,7 @@ with open(feed_urls_path, "r") as f:
 # The JSON file should be a dictionary mapping feed URLs to timestamps.
 # If the file doesn't exist, create an empty dictionary.
 try:
-    last_checked_times_path = f"{script_folder}last_checked_times.json"
+    last_checked_times_path = os.path.abspath("last_checked_times.json")
     with open(last_checked_times_path, "r") as f:
         last_checked_times = json.load(f)
 except FileNotFoundError:
