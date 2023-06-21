@@ -1,10 +1,11 @@
 # This script checks RSS feeds for new entries and posts them to Mastodon.
 
 import os
-import json
-import feedparser
-import time
 import re
+import sys
+import json
+import time
+import feedparser
 from mastodon import Mastodon
 from bs4 import BeautifulSoup
 
@@ -26,11 +27,13 @@ def strip_html_tags(html_string):
     return stripped_text
 
 
+# Change the working directory to the directory of this script
+os.chdir(sys.path[0])
+
 # Load the Mastodon access token and instance URL from a JSON file
 # The JSON file should contain a dictionary with "access_token"
 # and "instance_url" keys.
-mastodon_credentials_path = os.path.abspath("mastodon_credentials.json")
-with open(mastodon_credentials_path, "r") as f:
+with open("mastodon_credentials.json", "r") as f:
     credentials = json.load(f)
 access_token = credentials["access_token"]
 instance_url = credentials["instance_url"]
@@ -40,16 +43,14 @@ mastodon = Mastodon(access_token=access_token, api_base_url=instance_url)
 
 # Load the feed URLs from a JSON file
 # The JSON file should be an array of strings representing the feed URLs.
-feed_urls_path = os.path.abspath("feed_urls.json")
-with open(feed_urls_path, "r") as f:
+with open("feed_urls.json", "r") as f:
     feed_urls = json.load(f)
 
 # Load the timestamp for each feed from a JSON file
 # The JSON file should be a dictionary mapping feed URLs to timestamps.
 # If the file doesn't exist, create an empty dictionary.
 try:
-    last_checked_times_path = os.path.abspath("last_checked_times.json")
-    with open(last_checked_times_path, "r") as f:
+    with open("last_checked_times.json", "r") as f:
         last_checked_times = json.load(f)
 except FileNotFoundError:
     last_checked_times = {}
@@ -82,12 +83,13 @@ for feed_url in feed_urls:
         entry_summary = (entry.summary[:240] + " ..."
                          if len(entry.summary) > 240 else entry.summary)
         # Create a message with the entry title, summary, and link.
-        message = f"{strip_html_tags(entry.title)}\n\n \
-            {strip_html_tags(entry_summary)}\n\n{entry.link}"
+        message = (f"{strip_html_tags(entry.title)}\n\n"
+                   f"{strip_html_tags(entry_summary)}\n\n"
+                   f"{entry.link}")
         # Post the message to Mastodon.
         mastodon.status_post(message)
 
         # Update the timestamp for the feed in the file
         last_checked_times[feed_url] = entry_time
-        with open(last_checked_times_path, "w") as f:
+        with open("last_checked_times.json", "w") as f:
             json.dump(last_checked_times, f)
