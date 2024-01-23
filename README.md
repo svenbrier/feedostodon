@@ -7,13 +7,15 @@ This script checks a list of RSS feeds for new entries and posts them to a Masto
 1. Clone this repository to your local machine.
 2. Create a virtual environment and activate it.
 3. Install the required packages using `pip install -r requirements.txt`.
-4. Create a Mastodon account and obtain an access token.
+4. Create a Mastodon account and obtain an access token and a client_secret.
 5. Create a `mastodon_credentials.json` file with the following format:
 
 ```json
 {
+    "client_id": "feedostodon",
+    "client_secret": "your_client_secret_here",
     "access_token": "your_access_token_here",
-    "instance_url": "https://your.instance.url"
+    "api_base_url": "https://your.instance.url"
 }
 ```
 

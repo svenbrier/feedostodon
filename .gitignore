@@ -163,3 +163,5 @@ cython_debug/
 feed_urls.json
 last_checked_times.json
 mastodon_credentials.json
+main.py.v1
+mastodon_credentials.json.v1
