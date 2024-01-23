@@ -77,7 +77,7 @@ for feed_url in feed_urls:
         entry_summary = (entry.summary[:240] + " ..." if len(entry.summary) > 240 else entry.summary)
         message = (f"{strip_html_tags(entry.title)}\n\n"
                    f"{strip_html_tags(entry_summary)}\n\n"
-                   f"{entry.link} #Leipzig")
+                   f"{entry.link}")
 
         # Post the message to Mastodon
         mastodon.status_post(message)
